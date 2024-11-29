@@ -21,6 +21,7 @@ let computerWins = 0;
 let draws = 0;
 
 function initGame() {
+  loadGameData();
   boardState = Array(9).fill(null);
   currentPlayer = humanStarts ? 'X' : 'O';
   message.textContent = '';
@@ -152,6 +153,33 @@ function endGame(result) {
   humanWinsSpan.textContent = humanWins;
   computerWinsSpan.textContent = computerWins;
   drawsSpan.textContent = draws;
+
+  saveGameData();
+}
+
+function saveGameData() {
+  const gameData = {
+    gamesPlayed,
+    humanWins,
+    computerWins,
+    draws
+  };
+  localStorage.setItem('ticTacToeGameData', JSON.stringify(gameData));
+}
+
+function loadGameData() {
+  const gameData = JSON.parse(localStorage.getItem('ticTacToeGameData'));
+  if (gameData) {
+    gamesPlayed = gameData.gamesPlayed;
+    humanWins = gameData.humanWins;
+    computerWins = gameData.computerWins;
+    draws = gameData.draws;
+
+    gamesPlayedSpan.textContent = gamesPlayed;
+    humanWinsSpan.textContent = humanWins;
+    computerWinsSpan.textContent = computerWins;
+    drawsSpan.textContent = draws;
+  }
 }
 
 board.addEventListener('click', event => {
