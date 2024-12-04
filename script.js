@@ -12,6 +12,14 @@ const humanWinsSpan = document.getElementById('humanWins');
 const computerWinsSpan = document.getElementById('computerWins');
 const drawsSpan = document.getElementById('draws');
 
+const placeMoveSound = document.getElementById('placeMoveSound');
+const winSound = document.getElementById('winSound');
+const drawSound = document.getElementById('drawSound');
+const startGameSound = document.getElementById('startGameSound');
+const backgroundMusic = document.getElementById('backgroundMusic');
+const toggleSoundEffectsButton = document.getElementById('toggleSoundEffects');
+const toggleBackgroundMusicButton = document.getElementById('toggleBackgroundMusic');
+
 let boardState = Array(9).fill(null);
 let currentPlayer = 'X';
 let humanStarts = true;
@@ -19,6 +27,8 @@ let gamesPlayed = 0;
 let humanWins = 0;
 let computerWins = 0;
 let draws = 0;
+let soundEffectsEnabled = true;
+let backgroundMusicEnabled = true;
 
 function initGame() {
   loadGameData();
@@ -33,6 +43,12 @@ function initGame() {
   humanStarts = !humanStarts;
   if (currentPlayer === 'O') {
     setTimeout(computerMove, 500);
+  }
+  if (backgroundMusicEnabled) {
+    backgroundMusic.play();
+  }
+  if (soundEffectsEnabled) {
+    startGameSound.play();
   }
 }
 
@@ -134,6 +150,9 @@ function updateBoard(index, player) {
   const cell = board.children[index];
   cell.textContent = player;
   cell.classList.add(player);
+  if (soundEffectsEnabled) {
+    placeMoveSound.play();
+  }
 }
 
 function endGame(result) {
@@ -143,10 +162,19 @@ function endGame(result) {
 
   if (result.includes('Player')) {
     humanWins++;
+    if (soundEffectsEnabled) {
+      winSound.play();
+    }
   } else if (result.includes('Computer')) {
     computerWins++;
+    if (soundEffectsEnabled) {
+      winSound.play();
+    }
   } else {
     draws++;
+    if (soundEffectsEnabled) {
+      drawSound.play();
+    }
   }
 
   gamesPlayedSpan.textContent = gamesPlayed;
@@ -181,6 +209,22 @@ function loadGameData() {
     drawsSpan.textContent = draws;
   }
 }
+
+function toggleSoundEffects() {
+  soundEffectsEnabled = !soundEffectsEnabled;
+}
+
+function toggleBackgroundMusic() {
+  backgroundMusicEnabled = !backgroundMusicEnabled;
+  if (backgroundMusicEnabled) {
+    backgroundMusic.play();
+  } else {
+    backgroundMusic.pause();
+  }
+}
+
+toggleSoundEffectsButton.addEventListener('click', toggleSoundEffects);
+toggleBackgroundMusicButton.addEventListener('click', toggleBackgroundMusic);
 
 board.addEventListener('click', event => {
   if (event.target.classList.contains('cell')) {
